@@ -6,6 +6,12 @@
 
 ****
 
+
+          ![image](https://github.com/user-attachments/assets/31fc4654-1e18-4112-aad2-63fec8722a06)
+
+
+****
+
                                               🈯 操作指南 🈯
                                               
                                           使用 W A S D 键移动勇者
