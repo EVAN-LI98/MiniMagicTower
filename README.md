@@ -7,7 +7,7 @@
 ****
 
 
-          ![image](https://github.com/user-attachments/assets/31fc4654-1e18-4112-aad2-63fec8722a06)
+          ![image]([https://github.com/user-attachments/assets/31fc4654-1e18-4112-aad2-63fec8722a06](https://github.com/EVAN-LI98/MiniMagicTower/blob/main/IMG/%E5%BE%AE%E4%BF%A1%E6%88%AA%E5%9B%BE_20240801051046.png))
 
 
 ****
