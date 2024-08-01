@@ -1,0 +1,419 @@
+:root {
+  --border-color: #ffffff;
+  --module-bg-color: rgba(93, 7, 163, 0.702);
+  --game-container-bg-color: rgba(16, 69, 121, 0.6);
+  --game-board-bg-color: rgba(51, 6, 123, 0.6);
+  --module-opacity: 1;
+  --game-container-opacity: 1;
+  --game-board-opacity: 1;
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: Arial, sans-serif;
+  background-color: #2c3e50;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  background-image: url('../IMG/background.png');
+  background-repeat: repeat center center;
+  background-size: 100% 80%;
+
+}
+
+#game-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background-color: var(--game-container-bg-color); /* 使用 CSS 变量 */
+  padding: 20px;
+  border-radius: 15px;
+  border: 3px solid var(--border-color); /* 使用 CSS 变量 */
+}
+
+#game-content {
+  display: flex;
+  gap: 20px;
+}
+
+#game-board {
+  display: grid;
+  grid-template-columns: repeat(15, 40px);
+  grid-template-rows: repeat(15, 40px);
+  gap: 1px;
+  background-color: var(--game-board-bg-color); /* 使用 CSS 变量 */
+  padding: 10px;
+  border-radius: 10px;
+  align-content: center;
+}
+
+.cell {
+  width: 40px;
+  height: 40px;
+  background-color: #ecf0f1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  transition: all 0.3s ease;
+}
+
+.cell:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
+
+.monster {
+  background-color: rgba(255, 0, 0, 0.2);
+}
+
+.elite-monster {
+  background-color: rgba(255, 0, 0, 0.5);
+}
+
+.player {
+  background-color: rgba(255, 255, 5, 0.85);
+}
+
+.trap {
+  background-color: rgba(255, 0, 0, 0.5);
+}
+
+.merchant {
+  background-color: rgba(0, 0, 255, 0.2);
+}
+
+.module {
+  background-color: var(--module-bg-color); /* 使用 CSS 变量 */
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 20px;
+  transition: background-color 0.3s;
+}
+
+#title {
+  color: #ecf0f1;
+  font-size: 26px;
+  text-align: center;
+  margin-top: 10px;
+}
+
+#status {
+  color: #ecf0f1;
+  font-size: 18px;
+  width: 220px;
+}
+
+#status h3 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+#status p {
+  margin: 20px 0;
+}
+
+#status .stat-value {
+  font-weight: bold;
+  font-size: 24px;
+}
+
+#status .health { color: #2ecc71; }
+#status .attack { color: #e74c3c; }
+#status .defense { color: #3498db; }
+#status .floor { color: #f1c40f; }
+#status .gold { color: #f1c40f; }
+#monster-list, #item-list {
+  color: #ecf0f1;
+  font-size: 13.5px;
+  width: 220px;
+  max-height: 300px;
+  overflow-y: auto;
+  text-align: center;
+}
+#controls {
+  color: #ecf0f1;
+  font-size: 14px;
+  text-align: center;
+  width: 220px;
+}
+#terminal {
+  height: 150px;
+  color: #ecf0f1;
+  font-family: monospace;
+  padding: 10px;
+  overflow-y: auto;
+  position: relative;
+}
+#lang-toggle, #terminal-lang-toggle {
+  padding: 5px 10px;
+  background-color: #3498db;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+#lang-toggle {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+#terminal-lang-toggle {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+.monster-info .health { color: #2ecc71; }
+.monster-info .attack { color: #e74c3c; }
+.monster-info .defense { color: #3498db; }
+.monster-info .gold { color: #f1c40f; }
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+}
+.modal-content {
+  background-color: rgba(255, 255, 255, 0.7); /* 70% opacity */
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 66%; /* 2/3 of the original width */
+  border-radius: 15px; /* Rounded corners */
+}
+.modal-content button {
+  width: 50%; /* Twice the original width */
+  padding: 10px;
+  font-size: 1.2rem;
+}
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+#color-adjustment-panel {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  width: 50px;
+  height: 50px;
+  background-color: rgba(52, 73, 94, 0.8);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: width 0.3s, height 0.3s;
+  overflow: hidden;
+}
+
+#color-adjustment-panel.expanded {
+  width: 300px; /* 增加宽度 */
+  height: auto;
+  border-radius: 15px;
+}
+
+#color-adjustment-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 24px;
+  color: #fff;
+}
+
+#slider-container {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+}
+
+#color-adjustment-panel.expanded #slider-container {
+  display: flex;
+}
+
+.slider-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 10px 0;
+  padding: 10px;
+  background-color: rgba(52, 73, 94, 0.8);
+  border-radius: 15px;
+  width: 90%;
+}
+
+.slider-label, .slider-value {
+  background-color: rgba(52, 73, 94, 0.8);
+  padding: 5px 10px;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 14px;
+  margin: 5px 0;
+}
+
+input[type="range"] {
+  width: 100%;
+  margin: 5px 0;
+  -webkit-appearance: none;
+  appearance: none;
+  background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
+  height: 8px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: url('../IMG/huakuai.png') no-repeat center center;
+  background-size: contain;
+  cursor: pointer;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: url('../IMG/huakuai.png') no-repeat center center;
+  background-size: contain;
+  cursor: pointer;
+}
+
+input[type="range"]::-ms-thumb {
+  width: 20px;
+  height: 20px;
+  background: url('../IMG/huakuai.png') no-repeat center center;
+  background-size: contain;
+  cursor: pointer;
+}
+
+#social-icons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 15px;
+}
+
+#social-icons a {
+  color: #ecf0f1;
+  font-size: 24px;
+  transition: transform 0.3s, color 0.3s;
+}
+
+#social-icons a:hover {
+  transform: scale(1.2);
+  color: #3498db;
+}
+
+#author-message {
+  text-align: center; /* 文本居中 */
+  color: #ecf0f1;
+  margin-bottom: 35px;
+}
+
+#author-lang-toggle {
+  padding: 5px 10px;
+  background-color: rgba(52, 73, 94, 0.8);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+#author-lang-toggle:hover {
+  background-color: #3498db;
+  color: #ecf0f1;
+}
+
+#music-control-panel {
+  position: fixed;
+  top: 70px; /* 下移到颜色调节按钮下方 */
+  left: 10px;
+  width: 50px;
+  height: 50px;
+  background-color: rgba(52, 73, 94, 0.8);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: width 0.3s, height 0.3s;
+  overflow: hidden;
+}
+
+#music-control-panel.expanded {
+  width: 300px;
+  height: auto;
+  border-radius: 15px;
+}
+
+#music-control-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 24px;
+  color: #fff;
+}
+
+#music-slider-container {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+}
+
+#music-control-panel.expanded #music-slider-container {
+  display: flex;
+  flex-direction: column; /* 保持垂直方向 */
+  align-items: center;
+}
+
+#music-buttons {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+#music-buttons button {
+  background-color: rgba(52, 73, 94, 0.8);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 5px 10px;
+  margin: 5px;
+  cursor: pointer;
+}
+
+#music-buttons button:hover {
+  background-color: #3498db;
+  color: #ecf0f1;
+}
+
+#volume-slider {
+  width: 100%;
+  margin: 10px 0;
+}
+
+#current-track-info {
+  background-color: rgba(52, 73, 94, 0.8);
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 10px;
+  margin-top: 10px;
+  text-align: center;
+}

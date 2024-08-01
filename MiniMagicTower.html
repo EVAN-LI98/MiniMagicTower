@@ -1,610 +1,121 @@
-<html><head><base href="https://magicdungeon.example.com/">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>魔塔冒险 - 勇者的试炼</title>
-<style>
-  body, html {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    font-family: Arial, sans-serif;
-    background-color: #2c3e50;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-image: url('https://image.pollinations.ai/prompt/fantasy%20castle%20landscape%20pastel%20colors?width=1024&height=576&nologo=true');
-    background-repeat: repeat;
-    background-size: cover;
-  }
-  #game-container {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    background-color: rgba(255, 255, 255, 0.4);
-    padding: 20px;
-    border-radius: 15px;
-  }
-  #game-content {
-    display: flex;
-    gap: 20px;
-  }
-  #game-board {
-    display: grid;
-    grid-template-columns: repeat(15, 40px);
-    grid-template-rows: repeat(15, 40px);
-    gap: 1px;
-    background-color: rgba(52, 73, 94, 0.8);
-    padding: 10px;
-    border-radius: 10px;
-  }
-  .cell {
-    width: 40px;
-    height: 40px;
-    background-color: #ecf0f1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    transition: all 0.3s ease;
-  }
-  .cell:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-  }
-  .monster {
-    background-color: rgba(255, 0, 0, 0.2);
-  }
-  .player {
-    background-color: rgba(255, 255, 0, 0.2);
-  }
-  .trap {
-    background-color: rgba(255, 0, 0, 0.5);
-  }
-  .merchant {
-    background-color: rgba(0, 0, 255, 0.2);
-  }
-  .module {
-    background-color: rgba(52, 73, 94, 0.8);
-    border-radius: 10px;
-    padding: 15px;
-    margin-bottom: 20px;
-  }
-  #title {
-    color: #ecf0f1;
-    font-size: 24px;
-    text-align: center;
-    padding: 35px 10px 10px;
-    margin-top: 10px;
-  }
-  #status {
-    color: #ecf0f1;
-    font-size: 18px;
-    width: 220px;
-  }
-  #status h3 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  #status p {
-    margin: 20px 0;
-  }
-  #status .stat-value {
-    font-weight: bold;
-    font-size: 24px;
-  }
-  #status .health { color: #2ecc71; }
-  #status .attack { color: #e74c3c; }
-  #status .defense { color: #3498db; }
-  #status .floor { color: #f1c40f; }
-  #status .gold { color: #f1c40f; }
-  #monster-list, #item-list {
-    color: #ecf0f1;
-    font-size: 13.5px;
-    width: 220px;
-    max-height: 300px;
-    overflow-y: auto;
-    text-align: center;
-  }
-  #controls {
-    color: #ecf0f1;
-    font-size: 14px;
-    text-align: center;
-    width: 220px;
-  }
-  #terminal {
-    width: 100%;
-    height: 150px;
-    color: #ecf0f1;
-    font-family: monospace;
-    padding: 10px;
-    overflow-y: auto;
-    position: relative;
-  }
-  #lang-toggle, #terminal-lang-toggle {
-    padding: 5px 10px;
-    background-color: #3498db;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  #lang-toggle {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-  }
-  #terminal-lang-toggle {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-  }
-  .monster-info .health { color: #2ecc71; }
-  .monster-info .attack { color: #e74c3c; }
-  .monster-info .defense { color: #3498db; }
-  .monster-info .gold { color: #f1c40f; }
-</style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="CSS/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <title>Mini Magic Tower</title>
 </head>
 <body>
-<div id="game-container">
-  <div id="title" class="module">🏰 《小小魔塔》 🏰</div>
-  <div id="game-content">
-    <div>
-      <div id="status" class="module">
-        <h3>🦸‍♂️ 勇者状态 🦸‍♂️</h3>
-        <p>❤️ 生命值: <span id="health" class="stat-value health">100</span></p>
-        <p>⚔️ 攻击力: <span id="attack" class="stat-value attack">10</span></p>
-        <p>🛡️ 防御力: <span id="defense" class="stat-value defense">5</span></p>
-        <p>🏰 楼层: <span id="floor" class="stat-value floor">1</span></p>
-        <p>💰 金币: <span id="gold" class="stat-value gold">0</span></p>
+  <div id="game-container">
+    <div id="title" class="module">🏰 小小魔塔 🏰</div>
+    <div id="game-content">
+      <div>
+        <div id="status" class="module">
+          <h3>🦸‍♂️ 勇者状态 🦸‍♂️</h3>
+          <p>❤️ HP: <span id="health" class="stat-value health">100</span></p>
+          <p>⚔️ Attack: <span id="attack" class="stat-value attack">10</span></p>
+          <p>🛡️ Defense: <span id="defense" class="stat-value defense">5</span></p>
+          <p>🏰 Floor: <span id="floor" class="stat-value floor">1</span></p>
+          <p>💰 Gold: <span id="gold" class="stat-value gold">0</span></p>
+        </div>
+      </div>
+      <div id="game-board"></div>
+      <div>
+        <div id="monster-list" class="module">
+          <h3>🧟 怪物图鉴 🧟</h3>
+          <ul id="monster-info"></ul>
+        </div>
+        <div id="item-list" class="module">
+          <h3>🧙 NPC & 道具 🎁</h3>
+          <ul id="item-info"></ul>
+        </div>
+        <div id="controls" class="module">
+          <h3>🈯 操作指南 🈯</h3>
+          <p>使用 W A S D 键移动勇者</p>
+          <p>或点击相邻格子来移动</p>
+        </div>
       </div>
     </div>
-    <div id="game-board"></div>
-    <div>
-      <div id="monster-list" class="module">
-        <h3>🧟 怪物图鉴 🧟</h3>
-        <ul id="monster-info"></ul>
-      </div>
-      <div id="item-list" class="module">
-        <h3>🧙 NPC & 道具 🎁</h3>
-        <ul id="item-info"></ul>
-      </div>
-      <div id="controls" class="module">
-        <h3>🈯 操作指南 🈯</h3>
-        <p>使用 W A S D 键移动勇者</p>
-        <p>或点击相邻格子来移动</p>
+    <div id="terminal" class="module">
+      <button id="terminal-lang-toggle">EN/中文</button>
+    </div>
+    <div id="author-info" class="module">
+      <button id="author-lang-toggle">EN/中文</button>
+      <p id="author-message">🎮 欢迎来到《小小魔塔》，我是作者Evan, 很高兴你来玩我的游戏！🎮<br>🎮游戏当前版本为 V1.01🎮</p>
+      <div id="social-icons">
+        <a href="https://github.com/EVAN-LI98" target="_blank">
+          <i class="fab fa-github"></i>
+        </a>
+        <a href="https://x.com/EvANLyeee" target="_blank">
+          <i class="fab fa-twitter"></i>
+        </a>
+        <a href="https://www.youtube.com/channel/UCXGRzJqS308NGUr-auyH3Aw" target="_blank">
+          <i class="fab fa-youtube"></i>
+        </a>
+        <a href="https://space.bilibili.com/21480970?spm_id_from=333.1007.0.0" target="_blank">
+          <i class="fab fa-bilibili"></i>
+        </a>
+        <a href="https://www.instagram.com/evan_liyyy/" target="_blank">
+          <i class="fab fa-instagram"></i>
+        </a>
       </div>
     </div>
   </div>
-  <div id="terminal" class="module">
-    <button id="terminal-lang-toggle">EN/中文</button>
-  </div>
-  <div id="author-info" class="module" w-tid="39">
-    <button id="author-lang-toggle" w-tid="40">EN/中文</button>
-    <p id="author-message" w-tid="41">🎮 欢迎来到《小小魔塔》，我是作者EVAN Li, 很高兴你来玩我的游戏！🎮</p>
-    <div id="social-icons" w-tid="42">
-      <a href="https://github.com/EVAN-LI98" target="_blank" w-tid="43">
-        <i class="fab fa-github" w-tid="44">
-        </i>
-      </a>
-      <a href="https://x.com/EvANLyeee" target="_blank" w-tid="45">
-        <i class="fab fa-twitter" w-tid="46">
-        </i>
-      </a>
-      <a href="https://www.youtube.com/channel/UCXGRzJqS308NGUr-auyH3Aw" target="_blank" w-tid="47">
-        <i class="fab fa-youtube" w-tid="48">
-        </i>
-      </a>
-      <a href="https://www.instagram.com/evan_liyyy/" target="_blank" w-tid="49">
-        <i class="fab fa-instagram" w-tid="50">
-        </i>
-      </a>
+  <button id="lang-toggle">EN/中文</button>
+
+  <div id="color-adjustment-panel">
+    <div id="slider-container">
+      <div class="slider-wrapper">
+        <div class="slider-label">Module Background Color</div>
+        <input type="range" id="module-bg-color-slider" min="0" max="360" value="0" title="Adjust .module background color">
+        <input type="range" id="module-opacity-slider" min="0" max="100" value="100" title="Adjust .module opacity">
+        <div class="slider-value" id="module-bg-color-value">#000000</div>
+      </div>
+      <div class="slider-wrapper">
+        <div class="slider-label">Game Container Background Color</div>
+        <input type="range" id="game-container-bg-color-slider" min="0" max="360" value="0" title="Adjust #game-container background color">
+        <input type="range" id="game-container-opacity-slider" min="0" max="100" value="100" title="Adjust #game-container opacity">
+        <div class="slider-value" id="game-container-bg-color-value">#000000</div>
+      </div>
+      <div class="slider-wrapper">
+        <div class="slider-label">Game Board Background Color</div>
+        <input type="range" id="game-board-bg-color-slider" min="0" max="360" value="0" title="Adjust #game-board background color">
+        <input type="range" id="game-board-opacity-slider" min="0" max="100" value="100" title="Adjust #game-board opacity">
+        <div class="slider-value" id="game-board-bg-color-value">#000000</div>
+      </div>
     </div>
+    <div id="color-adjustment-icon">🎨</div>
   </div>
-</div>
-<button id="lang-toggle">EN/中文</button>
 
-<script>
-const gameBoard = document.getElementById('game-board');
-const healthEl = document.getElementById('health');
-const attackEl = document.getElementById('attack');
-const defenseEl = document.getElementById('defense');
-const floorEl = document.getElementById('floor');
-const goldEl = document.getElementById('gold');
-const monsterInfoEl = document.getElementById('monster-info');
-const itemInfoEl = document.getElementById('item-info');
-const terminalEl = document.getElementById('terminal');
-const langToggle = document.getElementById('lang-toggle');
-const terminalLangToggle = document.getElementById('terminal-lang-toggle');
-
-let currentLang = 'zh';
-let terminalLang = 'zh';
-let player = {
-  health: 100,
-  attack: 10,
-  defense: 5,
-  floor: 1,
-  gold: 0,
-  position: { x: 0, y: 0 }
-};
-
-const symbols = {
-  player: '🦸',
-  empty: '・',
-  wall: '□',
-  slime: '🟢',
-  bat: '🦇',
-  ghost: '👻',
-  dragon: '🐉',
-  skeleton: '💀',
-  demon: '👹',
-  goblin: '👺',
-  orc: '👽',
-  troll: '🧌',
-  wizard: '🧙',
-  vampire: '🧛',
-  werewolf: '🐺',
-  zombie: '🧟',
-  mummy: '🧞',
-  golem: '🗿',
-  potion: '🧪',
-  sword: '🗡️',
-  shield: '🛡️',
-  stairs: '📶',
-  trap: '💥',
-  merchant: '🤠'
-};
-
-const monsters = {
-  slime: { symbol: symbols.slime, name: {zh: "史莱姆", en: "Slime"}, health: 20, attack: 5, defense: 1, gold: 5 },
-  bat: { symbol: symbols.bat, name: {zh: "蝙蝠", en: "Bat"}, health: 30, attack: 8, defense: 2, gold: 8 },
-  ghost: { symbol: symbols.ghost, name: {zh: "幽灵", en: "Ghost"}, health: 40, attack: 12, defense: 3, gold: 12 },
-  skeleton: { symbol: symbols.skeleton, name: {zh: "骷髅", en: "Skeleton"}, health: 50, attack: 15, defense: 5, gold: 15 },
-  goblin: { symbol: symbols.goblin, name: {zh: "哥布林", en: "Goblin"}, health: 60, attack: 18, defense: 7, gold: 18 },
-  demon: { symbol: symbols.demon, name: {zh: "恶魔", en: "Demon"}, health: 80, attack: 22, defense: 10, gold: 25 },
-  dragon: { symbol: symbols.dragon, name: {zh: "龙", en: "Dragon"}, health: 100, attack: 25, defense: 15, gold: 50 },
-  orc: { symbol: symbols.orc, name: {zh: "兽人", en: "Orc"}, health: 70, attack: 20, defense: 8, gold: 22 },
-  troll: { symbol: symbols.troll, name: {zh: "巨魔", en: "Troll"}, health: 90, attack: 23, defense: 12, gold: 30 },
-  wizard: { symbol: symbols.wizard, name: {zh: "巫师", en: "Wizard"}, health: 65, attack: 30, defense: 5, gold: 35 },
-  vampire: { symbol: symbols.vampire, name: {zh: "吸血鬼", en: "Vampire"}, health: 75, attack: 28, defense: 8, gold: 40 },
-  werewolf: { symbol: symbols.werewolf, name: {zh: "狼人", en: "Werewolf"}, health: 85, attack: 26, defense: 9, gold: 38 },
-  zombie: { symbol: symbols.zombie, name: {zh: "僵尸", en: "Zombie"}, health: 45, attack: 14, defense: 4, gold: 14 },
-  mummy: { symbol: symbols.mummy, name: {zh: "木乃伊", en: "Mummy"}, health: 55, attack: 16, defense: 6, gold: 20 },
-  golem: { symbol: symbols.golem, name: {zh: "石头人", en: "Golem"}, health: 110, attack: 20, defense: 18, gold: 45 }
-};
-
-const items = {
-  potion: { symbol: symbols.potion, name: {zh: "药水", en: "Potion"}, effect: {zh: "恢复20点生命", en: "Restore 20 HP"} },
-  sword: { symbol: symbols.sword, name: {zh: "剑", en: "Sword"}, effect: {zh: "攻击+5", en: "Attack +5"} },
-  shield: { symbol: symbols.shield, name: {zh: "盾", en: "Shield"}, effect: {zh: "防御+3", en: "Defense +3"} },
-  stairs: { symbol: symbols.stairs, name: {zh: "门", en: "Door"}, effect: {zh: "下一层", en: "Next Floor"} },
-  trap: { symbol: symbols.trap, name: {zh: "陷阱", en: "Trap"}, effect: {zh: "随机伤害", en: "Random Damage"} },
-  merchant: { symbol: symbols.merchant, name: {zh: "商人", en: "Merchant"}, effect: {zh: "购买物品", en: "Buy items"} }
-};
-
-let currentFloorNPC = null;
-
-function createBoard() {
-  gameBoard.innerHTML = '';
-  for (let y = 0; y < 15; y++) {
-    for (let x = 0; x < 15; x++) {
-      const cell = document.createElement('div');
-      cell.classList.add('cell');
-      cell.dataset.x = x;
-      cell.dataset.y = y;
-      cell.addEventListener('click', handleCellClick);
-      gameBoard.appendChild(cell);
-    }
-  }
-  updateBoard();
-  updateMonsterInfo();
-  updateItemInfo();
-}
-
-function updateBoard() {
-  const cells = gameBoard.getElementsByClassName('cell');
-  for (let cell of cells) {
-    const x = parseInt(cell.dataset.x);
-    const y = parseInt(cell.dataset.y);
-    cell.classList.remove('monster', 'player', 'trap', 'merchant');
-    if (x === player.position.x && y === player.position.y) {
-      cell.textContent = symbols.player;
-      cell.classList.add('player');
-    } else if (Math.random() < 0.15) {
-      const monster = getRandomMonster();
-      cell.textContent = monster.symbol;
-      cell.classList.add('monster');
-    } else if (Math.random() < 0.05) {
-      cell.textContent = symbols.potion;
-    } else if (Math.random() < 0.03) {
-      cell.textContent = symbols.sword;
-    } else if (Math.random() < 0.03) {
-      cell.textContent = symbols.shield;
-    } else if (Math.random() < 0.05) {
-      cell.textContent = symbols.trap;
-      cell.classList.add('trap');
-    } else if (x === 14 && y === 14) {
-      cell.textContent = symbols.stairs;
-    } else if (currentFloorNPC && x === currentFloorNPC.x && y === currentFloorNPC.y) {
-      cell.textContent = symbols.merchant;
-      cell.classList.add('merchant');
-    } else {
-      cell.textContent = symbols.empty;
-    }
-  }
-}
-
-function getRandomMonster() {
-  const monsterTypes = Object.values(monsters);
-  const floorFactor = Math.min(player.floor / 15, 1);
-  const weightedMonsters = monsterTypes.filter(monster => 
-    Math.random() < floorFactor || monsterTypes.indexOf(monster) < 5
-  );
-  return weightedMonsters[Math.floor(Math.random() * weightedMonsters.length)];
-}
-
-function handleCellClick(event) {
-  const x = parseInt(event.target.dataset.x);
-  const y = parseInt(event.target.dataset.y);
-  movePlayer(x, y);
-}
-
-function movePlayer(x, y) {
-  const dx = Math.abs(x - player.position.x);
-  const dy = Math.abs(y - player.position.y);
+  <div id="music-control-panel">
+    <div id="music-slider-container">
+      <div id="music-buttons">
+        <button id="prev-track">⏮️</button>
+        <button id="play-pause">⏯️</button>
+        <button id="next-track">⏭️</button>
+      </div>
+      <input type="range" id="volume-slider" min="0" max="100" value="50" title="Adjust Volume">
+      <div id="current-track-info">Track Info</div>
+    </div>
+    <div id="music-control-icon">🎵</div>
+  </div>
   
-  if ((dx === 1 && dy === 0) || (dx === 0 && dy === 1)) {
-    const cell = gameBoard.querySelector(`[data-x="${x}"][data-y="${y}"]`);
-    const content = cell.textContent;
-    switch (content) {
-      case symbols.empty:
-        player.position = { x, y };
-        addToTerminal(terminalLang === 'zh' ? "🚶 勇者移动到了新的位置。" : "🚶 The hero moved to a new position.");
-        break;
-      case symbols.slime:
-      case symbols.bat:
-      case symbols.ghost:
-      case symbols.dragon:
-      case symbols.skeleton:
-      case symbols.demon:
-      case symbols.goblin:
-      case symbols.orc:
-      case symbols.troll:
-      case symbols.wizard:
-      case symbols.vampire:
-      case symbols.werewolf:
-      case symbols.zombie:
-      case symbols.mummy:
-      case symbols.golem:
-        fightMonster(content);
-        break;
-      case symbols.potion:
-        drinkPotion();
-        break;
-      case symbols.sword:
-        getSword();
-        break;
-      case symbols.shield:
-        getShield();
-        break;
-      case symbols.stairs:
-        nextFloor();
-        break;
-      case symbols.trap:
-        triggerTrap();
-        break;
-      case symbols.merchant:
-        interactWithMerchant();
-        break;
-    }
-    updateBoard();
-    updateStatus();
-  }
-}
+  <!-- Merchant Modal -->
+  <div id="merchant-modal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <p id="merchant-message"></p>
+      <button id="buy-item-1">🧪</button>
+      <button id="buy-item-2">🗡️</button>
+      <button id="buy-item-3">🛡️</button>
+      <button id="leave-merchant">🚪</button>
+    </div>
+  </div>
 
-function fightMonster(monsterSymbol) {
-  const monster = Object.values(monsters).find(m => m.symbol === monsterSymbol);
-  let monsterHealth = monster.health;
-  addToTerminal(terminalLang === 'zh' ? `⚔️ 你遇到了${monster.name.zh}！` : `⚔️ You encountered a ${monster.name.en}!`);
-
-  while (player.health > 0 && monsterHealth > 0) {
-    const playerDamage = Math.max(0, player.attack - monster.defense);
-    monsterHealth -= playerDamage;
-    addToTerminal(terminalLang === 'zh' ? 
-      `💥 你对${monster.name.zh}造成了${playerDamage}点伤害。` : 
-      `💥 You dealt ${playerDamage} damage to the ${monster.name.en}.`
-    );
-
-    if (monsterHealth <= 0) {
-      player.gold += monster.gold;
-      addToTerminal(terminalLang === 'zh' ? 
-        `🎉 你击败了${monster.name.zh}！获得了${monster.gold}枚金币。` : 
-        `🎉 You defeated the ${monster.name.en}! You gained ${monster.gold} gold.`
-      );
-      break;
-    }
-
-    const monsterDamage = Math.max(0, monster.attack - player.defense);
-    player.health -= monsterDamage;
-    addToTerminal(terminalLang === 'zh' ? 
-      `😱 ${monster.name.zh}对你造成了${monsterDamage}点伤害。` : 
-      `😱 The ${monster.name.en} dealt ${monsterDamage} damage to you.`
-    );
-  }
-
-  if (player.health <= 0) {
-    addToTerminal(terminalLang === 'zh' ? '💀 游戏结束！你被怪物打败了。' : '💀 Game Over! You were defeated by the monster.');
-    resetGame();
-  }
-}
-
-function drinkPotion() {
-  player.health = Math.min(100, player.health + 20);
-  addToTerminal(terminalLang === 'zh' ? '🧪 你喝了一瓶药水，恢复了 20 点生命值！' : '🧪 You drank a potion and restored 20 HP!');
-}
-
-function getSword() {
-  player.attack += 5;
-  addToTerminal(terminalLang === 'zh' ? '🗡️ 你找到了一把剑，攻击力 +5！' : '🗡️ You found a sword. Attack +5!');
-}
-
-function getShield() {
-  player.defense += 3;
-  addToTerminal(terminalLang === 'zh' ? '🛡️ 你找到了一面盾牌，防御力 +3！' : '🛡️ You found a shield. Defense +3!');
-}
-
-function nextFloor() {
-  player.floor++;
-  player.position = { x: 0, y: 0 };
-  currentFloorNPC = Math.random() < 0.5 ? { x: Math.floor(Math.random() * 15), y: Math.floor(Math.random() * 15) } : null;
-  addToTerminal(terminalLang === 'zh' ? `🎊 恭喜！你到达了第 ${player.floor} 层。` : `🎊 Congratulations! You reached floor ${player.floor}.`);
-  createBoard();
-}
-
-function triggerTrap() {
-  const damage = Math.floor(Math.random() * 10) + 5;
-  player.health -= damage;
-  addToTerminal(terminalLang === 'zh' ? `💥 你触发了陷阱，受到 ${damage} 点伤害！` : `💥 You triggered a trap and took ${damage} damage!`);
-  if (player.health <= 0) {
-    addToTerminal(terminalLang === 'zh' ? '💀 游戏结束！你被陷阱击败了。' : '💀 Game Over! You were defeated by a trap.');
-    resetGame();
-  }
-}
-
-function interactWithMerchant() {
-  const options = [
-    { name: { zh: '恢复生命值 (10金币)', en: 'Restore HP (10 gold)' }, cost: 10, effect: () => { player.health = Math.min(100, player.health + 30); } },
-    { name: { zh: '增加攻击力 (15金币)', en: 'Increase Attack (15 gold)' }, cost: 15, effect: () => { player.attack += 3; } },
-    { name: { zh: '增加防御力 (15金币)', en: 'Increase Defense (15 gold)' }, cost: 15, effect: () => { player.defense += 3; } }
-  ];
-
-  const choice = prompt(terminalLang === 'zh' ?
-    `你遇到了商人！选择要购买的物品：\n1. ${options[0].name.zh}\n2. ${options[1].name.zh}\n3. ${options[2].name.zh}\n4. 离开` :
-    `You met a merchant! Choose an item to buy:\n1. ${options[0].name.en}\n2. ${options[1].name.en}\n3. ${options[2].name.en}\n4. Leave`
-  );
-
-  if (choice && choice >= 1 && choice <= 3) {
-    const selectedOption = options[choice - 1];
-    if (player.gold >= selectedOption.cost) {
-      player.gold -= selectedOption.cost;
-      selectedOption.effect();
-      addToTerminal(terminalLang === 'zh' ?
-        `🛒 你购买了${selectedOption.name.zh}，花费了${selectedOption.cost}金币。` :
-        `🛒 You bought ${selectedOption.name.en} for ${selectedOption.cost} gold.`
-      );
-    } else {
-      addToTerminal(terminalLang === 'zh' ? '💰 你没有足够的金币！' : '💰 You don\'t have enough gold!');
-    }
-  } else {
-    addToTerminal(terminalLang === 'zh' ? '👋 你离开了商人。' : '👋 You left the merchant.');
-  }
-}
-
-function updateStatus() {
-  healthEl.textContent = player.health;
-  attackEl.textContent = player.attack;
-  defenseEl.textContent = player.defense;
-  floorEl.textContent = player.floor;
-  goldEl.textContent = player.gold;
-}
-
-function updateMonsterInfo() {
-  monsterInfoEl.innerHTML = '';
-  for (const [key, monster] of Object.entries(monsters)) {
-    const li = document.createElement('li');
-    li.className = 'monster-info';
-    li.innerHTML = `${monster.symbol} ${monster.name[currentLang]}: <span class="health">${monster.health}</span>, <span class="attack">${monster.attack}</span>, <span class="defense">${monster.defense}</span>, <span class="gold">${monster.gold}</span>`;
-    monsterInfoEl.appendChild(li);
-  }
-}
-
-function updateItemInfo() {
-  itemInfoEl.innerHTML = '';
-  for (const [key, item] of Object.entries(items)) {
-    const li = document.createElement('li');
-    li.textContent = `${item.symbol} ${item.name[currentLang]}: ${item.effect[currentLang]}`;
-    itemInfoEl.appendChild(li);
-  }
-}
-
-function resetGame() {
-  player = {
-    health: 100,
-    attack: 10,
-    defense: 5,
-    floor: 1,
-    gold: 0,
-    position: { x: 0, y: 0 }
-  };
-  currentFloorNPC = Math.random() < 0.5 ? { x: Math.floor(Math.random() * 15), y: Math.floor(Math.random() * 15) } : null;
-  createBoard();
-  updateStatus();
-  addToTerminal(terminalLang === 'zh' ? "🔄 游戏重新开始！" : "🔄 Game restarted!");
-}
-
-function addToTerminal(message) {
-  const p = document.createElement('p');
-  p.textContent = message;
-  terminalEl.appendChild(p);
-  terminalEl.scrollTop = terminalEl.scrollHeight;
-}
-
-langToggle.addEventListener('click', () => {
-  currentLang = currentLang === 'zh' ? 'en' : 'zh';
-  updateLanguage();
-});
-
-terminalLangToggle.addEventListener('click', () => {
-  terminalLang = terminalLang === 'zh' ? 'en' : 'zh';
-  updateTerminalLanguage();
-});
-
-function updateLanguage() {
-  document.getElementById('title').textContent = currentLang === 'zh' ? '🏰 《小小魔塔》 🏰' : '🏰 Mini Magic Tower 🏰';
-  document.querySelector('#status h3').textContent = currentLang === 'zh' ? '🦸‍♂️ 勇者状态 🦸‍♂️' : '🦸‍♂️ Hero Status 🦸‍♂️';
-  document.querySelector('#status p:nth-child(2)').childNodes[0].textContent = currentLang === 'zh' ? '❤️ 生命值: ' : '❤️ HP: ';
-  document.querySelector('#status p:nth-child(3)').childNodes[0].textContent = currentLang === 'zh' ? '⚔️ 攻击力: ' : '⚔️ Attack: ';
-  document.querySelector('#status p:nth-child(4)').childNodes[0].textContent = currentLang === 'zh' ? '🛡️ 防御力: ' : '🛡️ Defense: ';
-  document.querySelector('#status p:nth-child(5)').childNodes[0].textContent = currentLang === 'zh' ? '🏰 楼层: ' : '🏰 Floor: ';
-  document.querySelector('#status p:nth-child(6)').childNodes[0].textContent = currentLang === 'zh' ? '💰 金币: ' : '💰 Gold: ';
-  document.querySelector('#monster-list h3').textContent = currentLang === 'zh' ? '🧟 怪物图鉴 🧟' : '🧟 Monster Guide 🧟';
-  document.querySelector('#item-list h3').textContent = currentLang === 'zh' ? '🧙 NPC & 道具 🎁' : '🧙 NPC & Items 🎁';
-  document.querySelector('#controls h3').textContent = currentLang === 'zh' ? '🈯 操作指南 🈯' : '🈯 Controls 🈯';
-  document.querySelector('#controls p:nth-child(2)').textContent = currentLang === 'zh' ? '使用 W A S D 键移动勇者' : 'Use W A S D keys to move the hero';
-  document.querySelector('#controls p:nth-child(3)').textContent = currentLang === 'zh' ? '或点击相邻格子来移动' : 'Or click adjacent cells to move';
-  updateMonsterInfo();
-  updateItemInfo();
-}
-
-function updateTerminalLanguage() {
-  terminalEl.innerHTML = '';
-  terminalEl.appendChild(terminalLangToggle);
-  addToTerminal(terminalLang === 'zh' ? "🎮 欢迎来到《小小魔塔》🎮" : "🎮 Welcome to Mini Magic Tower 🎮");
-  addToTerminal(terminalLang === 'zh' ? "🧙‍♂️ 作者: Yifan Li 🧙‍♂️" : "🧙‍♂️ Author: Yifan Li 🧙‍♂️");
-  addToTerminal(terminalLang === 'zh' ? "📧 邮箱: arthur19980529@gmail.com 📧" : "📧 Email: arthur19980529@gmail.com 📧");
-  addToTerminal(terminalLang === 'zh' ? "🚀 勇者，你的冒险旅程开始了！" : "🚀 Hero, your adventure begins!");
-}
-
-document.addEventListener('keydown', (event) => {
-  const key = event.key.toLowerCase();
-  const { x, y } = player.position;
-  switch (key) {
-    case 'w':
-      movePlayer(x, y - 1);
-      break;
-    case 's':
-      movePlayer(x, y + 1);
-      break;
-    case 'a':
-      movePlayer(x - 1, y);
-      break;
-    case 'd':
-      movePlayer(x + 1, y);
-      break;
-  }
-});
-
-createBoard();
-updateStatus();
-updateTerminalLanguage();
-</script>
-</body></html>
+  <script src="JS/GameScript.js"></script>
+  <script src="JS/ColorPicker.js"></script>
+  <script src="JS/MusicPlayer.js"></script>
+</body>
+</html>
